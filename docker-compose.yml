@@ -9,3 +9,4 @@ services:
       - 27017:27017
 
 ### run -> docker compose up
+### abrir docker fora do wsl e startar container

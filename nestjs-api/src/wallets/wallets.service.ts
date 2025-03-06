@@ -4,21 +4,23 @@ import mongoose, { Model } from 'mongoose';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Wallet } from './entities/wallet.entity';
 import { WalletAsset } from './entities/wallet-asset.entity';
+import { Asset } from 'src/assets/entities/asset.entity';
 
 @Injectable()
 export class WalletsService {
   constructor(
     @InjectModel(Wallet.name) private walletSchema: Model<Wallet>,
-    @InjectModel(WalletAsset.name) private walletAssetSchema: Model<WalletAsset>,
+    @InjectModel(WalletAsset.name)
+    private walletAssetSchema: Model<WalletAsset>,
     @InjectConnection() private connection: mongoose.Connection,
   ) {}
-  
+
   create(createWalletDto: CreateWalletDto) {
-    return this.walletSchema.create(createWalletDto)
+    return this.walletSchema.create(createWalletDto);
   }
 
   findAll() {
-    return this.walletSchema.find()
+    return this.walletSchema.find();
   }
 
   findOne(id: string) {
@@ -26,51 +28,52 @@ export class WalletsService {
     return this.walletSchema.findById(id).populate([
       {
         path: 'assets', //walletasset
-        populate: ['asset']
-      }
-    ]);
+        populate: ['asset'],
+      },
+    ]) as Promise<
+      (Wallet & { assets: (WalletAsset & { asset: Asset })[] }) | null
+    >;
   }
 
   async createWalletAsset(data: {
     walletId: string;
     assetId: string;
-    shares: number
+    shares: number;
   }) {
     const session = await this.connection.startSession();
     await session.startTransaction();
 
     try {
       const docs = await this.walletAssetSchema.create(
-        [{
-          wallet: data.walletId,
-          asset: data.assetId,
-          shares: data.shares,
-        }],
-        { session }
-      )
+        [
+          {
+            wallet: data.walletId,
+            asset: data.assetId,
+            shares: data.shares,
+          },
+        ],
+        { session },
+      );
 
-      const walletAsset = docs[0]
-  
+      const walletAsset = docs[0];
+
       await this.walletSchema.updateOne(
         { _id: data.walletId },
         {
-          $push: { assets: walletAsset._id }
+          $push: { assets: walletAsset._id },
         },
         {
-          session
-        }
-      )
+          session,
+        },
+      );
       await session.commitTransaction();
       return walletAsset;
-
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       await session.abortTransaction();
       throw e;
-
     } finally {
       session.endSession();
     }
-
   }
 }

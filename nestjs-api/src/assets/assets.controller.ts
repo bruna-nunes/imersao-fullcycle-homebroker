@@ -10,18 +10,18 @@ export class AssetsController {
   @Post()
   async create(@Body() createAssetDto: CreateAssetDto) {
     const asset = await this.assetsService.create(createAssetDto);
-    return new AssetPresenter(asset)
+    return new AssetPresenter(asset);
   }
 
   @Get()
   async findAll() {
     const assets = await this.assetsService.findAll();
-    return assets.map((asset) => new AssetPresenter(asset))
+    return assets.map((asset) => new AssetPresenter(asset));
   }
 
   @Get(':symbol')
   async findOne(@Param('symbol') symbol: string) {
     const asset = await this.assetsService.findOne(symbol);
-    return new AssetPresenter(asset!)
+    return new AssetPresenter(asset!);
   }
 }

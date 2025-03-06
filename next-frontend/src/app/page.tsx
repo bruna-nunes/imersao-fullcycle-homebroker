@@ -1,5 +1,6 @@
 import { Wallet } from "@/models";
 import { Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
+import Image from "next/image"
 
 export async function getMyWallet(walletId: string): Promise<Wallet> {
   const response = fetch(`http://localhost:3000/wallets/${walletId}`)
@@ -31,7 +32,22 @@ export default async function MyWalleList({
           <TableBody>
             {wallet.assets.map((walletAsset, key) => (
               <TableRow key={key}>
-              <TableCell>{walletAsset.asset.name}</TableCell>
+              <TableCell>
+                <div className="flex space-x-1">
+                  <div className="content-center">
+                    <Image
+                      src={walletAsset.asset.image_url}
+                      alt={walletAsset.asset.symbol}
+                      width={30}
+                      height={30}  
+                    />
+                  </div>
+                  <div className="flex flex-col text-sm">
+                    <span>{walletAsset.asset.name}</span>
+                    <span>{walletAsset.asset.symbol}</span>
+                  </div>
+                </div>
+              </TableCell>
               <TableCell>R$ {walletAsset.asset.price}</TableCell>
               <TableCell>{walletAsset.shares}</TableCell>
               <TableCell>

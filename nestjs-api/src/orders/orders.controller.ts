@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { OrderPresenter } from './orders.presenter';
 
 @Controller('orders')
 export class OrdersController {
@@ -12,16 +13,15 @@ export class OrdersController {
   }
 
   @Get()
-  findAll(@Query('walletId') walletId: string) {
+  async findAll(@Query('walletId') walletId: string) {
     // projeto sem autenticacao. num projeto com autenticacao teriamos o user na request e pegariamos seu wallet id
     // por enquanto passamos como query sring
-    return this.ordersService.findAll({ walletId });
+    const orders = this.ordersService.findAll({ walletId });
+    return (await orders).map((order) => new OrderPresenter(order));
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.ordersService.findOne( id);
+    return this.ordersService.findOne(id);
   }
 }
-
-

@@ -9,11 +9,11 @@ export class AssetsService {
   constructor(@InjectModel(Asset.name) private assetSchema: Model<Asset>) {}
 
   create(createAssetDto: CreateAssetDto) {
-    return this.assetSchema.create(createAssetDto)
+    return this.assetSchema.create(createAssetDto);
   }
 
   findAll() {
-    return this.assetSchema.find()
+    return this.assetSchema.find();
   }
 
   findOne(symbol: string) {

@@ -7,17 +7,18 @@ import { WalletAsset, WalletAssetSchema } from './entities/wallet-asset.entity';
 
 @Module({
   imports: [
-      MongooseModule.forFeature([ // especificar colections que serao utilizada
-        {
-          name: Wallet.name,
-          schema: WalletSchema,
-        },
-        {
-          name: WalletAsset.name,
-          schema: WalletAssetSchema,
-        },
-      ]),
-    ],
+    MongooseModule.forFeature([
+      // especificar colections que serao utilizada
+      {
+        name: Wallet.name,
+        schema: WalletSchema,
+      },
+      {
+        name: WalletAsset.name,
+        schema: WalletAssetSchema,
+      },
+    ]),
+  ],
   controllers: [WalletsController],
   providers: [WalletsService],
 })

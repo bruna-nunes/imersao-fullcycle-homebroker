@@ -6,10 +6,11 @@ import { Asset, AssetSchema } from './entities/asset.entity';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([ // especificar colections que serao utilizada
+    MongooseModule.forFeature([
+      // especificar colections que serao utilizada
       {
         name: Asset.name,
-        schema: AssetSchema
+        schema: AssetSchema,
       },
     ]),
   ],

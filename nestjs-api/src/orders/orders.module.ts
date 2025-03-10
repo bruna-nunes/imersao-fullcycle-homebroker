@@ -6,11 +6,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([ // especificar colections que serao utilizada
+    MongooseModule.forFeature([
+      // especificar colections que serao utilizada
       {
         name: Order.name,
         schema: OrderSchema,
-      },    
+      },
     ]),
   ],
   controllers: [OrdersController],

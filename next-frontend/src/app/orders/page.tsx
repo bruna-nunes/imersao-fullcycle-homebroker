@@ -1,13 +1,9 @@
 import { AssetShow } from "@/components/AssetShow";
 import { OrderStatusBadge } from "@/components/OrderStatusBadge";
 import { OrderTypeBadge } from "@/components/OrderTypeBadge";
-import { Order } from "@/models";
+import { WalletList } from "@/components/WalletList";
+import { getMyWallet, getOrders } from "@/queries/queries";
 import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
-
-export async function getOrders(walletId: string): Promise<Order[]> {
-  const response = await fetch(`http://localhost:3000/orders?walletId=${walletId}`);
-  return response.json();
-}
 
 export default async function OrdersListPage({
   searchParams
@@ -16,6 +12,17 @@ export default async function OrdersListPage({
 }) {
   // como nao temos autenticacao, passaremos o walletIs via query param
   const { wallet_id } = await searchParams;
+
+  if(!wallet_id) {
+    return <WalletList />;
+  }
+  
+  const wallet = await getMyWallet(wallet_id)
+  
+  if(!wallet) {
+    return <WalletList />
+  }
+
   const orders = await getOrders(wallet_id);
 
   return (
